@@ -29,6 +29,15 @@ export class BookmarksService {
     await this.bookmarkModel.findByIdAndDelete(id);
   }
 
+  async searchItem(key: string): Promise<Bookmark[]> {
+    const bookmarks = await this.getBookmarks();
+    const keyword = key;
+    return bookmarks.filter(bookmark =>
+      bookmark.title.toLowerCase().includes(keyword.toLowerCase()) ||
+      bookmark.url.toLowerCase().includes(keyword.toLowerCase()),
+    );
+  }
+
   private async fetchTitle(url: string): Promise<string> {
     try {
       const response = await axios.get(url);
