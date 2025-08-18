@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/bookmarks-app'),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     BookmarksModule,
   ],
 })
