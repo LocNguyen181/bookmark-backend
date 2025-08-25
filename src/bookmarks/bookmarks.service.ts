@@ -9,20 +9,29 @@ export class BookmarksService {
   constructor(
     @InjectModel(Bookmark.name)
     private readonly bookmarkModel: Model<BookmarkDocument>,
-  ) {}
+  ) { }
 
   async getBookmarks(): Promise<Bookmark[]> {
-    return this.bookmarkModel.find().exec();
+    try {
+      return this.bookmarkModel.find().exec();
+    } catch (e) {
+      throw new Error('Got Error');
+    }
   }
 
   async create(url: string): Promise<Bookmark> {
-    const title = await this.fetchTitle(url);
+    try {
+      const title = await this.fetchTitle(url);
 
-    const newBookmark = new this.bookmarkModel({
-      url,
-      title,
-    });
-    return newBookmark.save();
+      const newBookmark = new this.bookmarkModel({
+        url,
+        title,
+      });
+      return newBookmark.save();
+    } catch (e) {
+      throw new Error('Got Error');
+    }
+
   }
 
   async delete(id: string): Promise<void> {
@@ -30,12 +39,16 @@ export class BookmarksService {
   }
 
   async searchItem(key: string): Promise<Bookmark[]> {
-    const bookmarks = await this.getBookmarks();
-    const keyword = key;
-    return bookmarks.filter(bookmark =>
-      bookmark.title.toLowerCase().includes(keyword.toLowerCase()) ||
-      bookmark.url.toLowerCase().includes(keyword.toLowerCase()),
-    );
+    try {
+      const bookmarks = await this.getBookmarks();
+      const keyword = key;
+      return bookmarks.filter(bookmark =>
+        bookmark.title.toLowerCase().includes(keyword.toLowerCase()) ||
+        bookmark.url.toLowerCase().includes(keyword.toLowerCase()),
+      );
+    } catch (e) {
+      throw new Error('Got Error');
+    }
   }
 
   private async fetchTitle(url: string): Promise<string> {
