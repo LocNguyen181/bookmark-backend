@@ -8,7 +8,6 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.use(express.static(join(__dirname, '..', 'public')));
 
-  // Fallback React Router (chỉ áp dụng cho non-API routes)
   app.use((req, res, next) => {
     if (req.path.startsWith('/api')) {
       return next();

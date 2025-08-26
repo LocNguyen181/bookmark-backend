@@ -9,7 +9,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        const uri = configService.get<string>('PROD_URI');
+        const appEnv = configService.get<string>('APP_ENV');
+        const uri =
+          appEnv === 'test'
+            ? configService.get<string>('TEST_URI')
+            : configService.get<string>('PROD_URI');
         if (!uri) {
           throw new Error('MONGO_URI is undefined. Please set the environment variable.');
         }
