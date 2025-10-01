@@ -12,9 +12,9 @@ export class BookmarksController {
   }
 
   @Post()
-  async create(@Body() body: { url: string }) {
+  async create(@Body() body: { url: string; tags?: string[] | string }) {
     console.log('Received body:', body);
-    return this.bookmarksService.create(body.url);
+    return this.bookmarksService.create(body.url, body.tags);
   }
 
   @Delete(':id')
@@ -24,5 +24,13 @@ export class BookmarksController {
   @Get('getByKeyWord')
   getByKeyWord(@Query('key') key: string): Promise<Bookmark[]> {
     return this.bookmarksService.searchItem(key);
+  }
+
+  @Post(':id/tags')
+  async addTagsToBookmark(
+    @Param('id') id: string,
+    @Body() body: { tags: string[] },
+  ): Promise<void> {
+    return this.bookmarksService.addTags(id, body.tags);
   }
 }

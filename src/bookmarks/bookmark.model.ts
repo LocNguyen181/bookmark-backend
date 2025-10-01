@@ -11,6 +11,9 @@ export class Bookmark {
   @Prop()
   title?: string;
 
+  @Prop({ type: [String], default: [] })
+  tags?: string[];
+
   @Prop({ default: Date.now })
   dateAdded?: Date;
 }

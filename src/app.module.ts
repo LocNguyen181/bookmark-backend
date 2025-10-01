@@ -10,10 +10,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const appEnv = configService.get<string>('APP_ENV');
-        const uri =
-          appEnv === 'test'
-            ? configService.get<string>('TEST_URI')
-            : configService.get<string>('PROD_URI');
+        let uri = '';
+        if (appEnv === 'production') {
+          uri = configService.get<string>('PROD_URI');
+        } else if (appEnv === 'test') {
+          uri = configService.get<string>('TEST_URI')
+        } else {
+          uri = configService.get<string>('PRODLOCAL_URI');
+        }
+
         if (!uri) {
           throw new Error('MONGO_URI is undefined. Please set the environment variable.');
         }

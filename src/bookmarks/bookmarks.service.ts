@@ -19,13 +19,19 @@ export class BookmarksService {
     }
   }
 
-  async create(url: string): Promise<Bookmark> {
+  async create(url: string, tags?: string[] | string): Promise<Bookmark> {
     try {
       const title = await this.fetchTitle(url);
+
+      const normalized = Array.isArray(tags) ? tags : (typeof tags === 'string' ? [tags] : []);
+      const cleanedTags = (normalized || [])
+        .map(t => (t ?? '').toString().trim())
+        .filter(t => t.length > 0);
 
       const newBookmark = new this.bookmarkModel({
         url,
         title,
+        ...(cleanedTags.length > 0 ? { tags: cleanedTags } : {}),
       });
       return newBookmark.save();
     } catch (e) {
@@ -53,13 +59,49 @@ export class BookmarksService {
 
   private async fetchTitle(url: string): Promise<string> {
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; BookmarkBot/1.0)'
+        },
+        timeout: 7000,
+      });
       const html = response.data as string;
       const $ = cheerio.load(html);
-      return $('title').text().trim() || url;
+
+      const getMeta = (selector: string) => $(selector).attr('content')?.toString().trim() || '';
+      const collapseWhitespace = (text: string) => text.replace(/\s+/g, ' ').trim();
+
+      // Prefer explicit metadata first
+      const candidates: string[] = [
+        getMeta('meta[property="og:title"]'),
+        getMeta('meta[name="twitter:title"]'),
+        getMeta('meta[name="title"]'),
+        $('head > title').first().text().trim(),
+      ].filter(Boolean);
+
+      const raw = candidates.find(Boolean) || '';
+      const cleaned = collapseWhitespace(raw);
+
+      return cleaned || url;
     } catch (err) {
       console.warn(`Failed to fetch title from ${url}`);
       return url;
     }
+  }
+  
+  async addTags(id: string, tags: string[] | string): Promise<void> {
+    const normalized = Array.isArray(tags) ? tags : [tags];
+    const cleaned = normalized
+      .map(t => (t ?? '').toString().trim())
+      .filter(t => t.length > 0);
+    if (cleaned.length === 0) return;
+
+    await this.bookmarkModel
+      .findByIdAndUpdate(
+        id,
+        { $addToSet: { tags: { $each: cleaned } } },
+        { upsert: false }
+      )
+      .exec();
   }
 }

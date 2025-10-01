@@ -19,6 +19,6 @@ async function bootstrap() {
     origin: "https://jpburl.onrender.com",
     methods: "GET,POST,PUT,DELETE",
   });
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(process.env.PORT || 3000, "0.0.0.0");
 }
 bootstrap();
