@@ -11,9 +11,18 @@ export class BookmarksService {
     private readonly bookmarkModel: Model<BookmarkDocument>,
   ) { }
 
-  async getBookmarks(): Promise<Bookmark[]> {
+  async getBookmarks(page: number = 1, limit: number = 10): Promise<{ items: Bookmark[], totalPages: number, total: number }> {
     try {
-      return this.bookmarkModel.find().exec();
+      const skip = (page - 1) * limit;
+      const [items, total] = await Promise.all([
+        this.bookmarkModel.find().skip(skip).limit(limit).exec(),
+        this.bookmarkModel.countDocuments().exec()
+      ]);
+      return {
+        items,
+        totalPages: Math.ceil(total / limit),
+        total
+      };
     } catch (e) {
       throw new Error('Got Error');
     }
@@ -46,9 +55,9 @@ export class BookmarksService {
 
   async searchItem(key: string): Promise<Bookmark[]> {
     try {
-      const bookmarks = await this.getBookmarks();
+      const result = await this.getBookmarks();
       const keyword = key;
-      return bookmarks.filter(bookmark =>
+      return result.items.filter(bookmark =>
         bookmark.title.toLowerCase().includes(keyword.toLowerCase()) ||
         bookmark.url.toLowerCase().includes(keyword.toLowerCase()),
       );

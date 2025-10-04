@@ -7,8 +7,10 @@ export class BookmarksController {
   constructor(private readonly bookmarksService: BookmarksService) { }
 
   @Get()
-  getAll(): Promise<Bookmark[]> {
-    return this.bookmarksService.getBookmarks();
+  getAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 10;
+    return this.bookmarksService.getBookmarks(pageNum, limitNum);
   }
 
   @Post()
