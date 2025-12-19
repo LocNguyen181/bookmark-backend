@@ -14,14 +14,8 @@ export class BookmarksController {
   }
 
   @Post()
-<<<<<<< HEAD
   async create(@Body() body: { url: string }) {
     return this.bookmarksService.create(body.url);
-=======
-  async create(@Body() body: { url: string; tags?: string[] | string }) {
-    console.log('Received body:', body);
-    return this.bookmarksService.create(body.url, body.tags);
->>>>>>> a794cda9899fb8709f21efd3d88eca89157cd5da
   }
 
   @Delete(':id')
