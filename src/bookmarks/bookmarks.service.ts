@@ -9,7 +9,7 @@ export class BookmarksService {
   constructor(
     @InjectModel(Bookmark.name)
     private readonly bookmarkModel: Model<BookmarkDocument>,
-  ) {}
+  ) { }
 
   async getBookmarks(): Promise<Bookmark[]> {
     return this.bookmarkModel.find().exec();
@@ -29,9 +29,8 @@ export class BookmarksService {
     await this.bookmarkModel.findByIdAndDelete(id);
   }
 
-  async searchItem(key: string): Promise<Bookmark[]> {
+  async searchBookmarks(keyword: string): Promise<Bookmark[]> {
     const bookmarks = await this.getBookmarks();
-    const keyword = key;
     return bookmarks.filter(bookmark =>
       bookmark.title.toLowerCase().includes(keyword.toLowerCase()) ||
       bookmark.url.toLowerCase().includes(keyword.toLowerCase()),

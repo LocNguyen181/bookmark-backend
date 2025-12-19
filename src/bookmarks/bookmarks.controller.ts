@@ -13,7 +13,6 @@ export class BookmarksController {
 
   @Post()
   async create(@Body() body: { url: string }) {
-    console.log('Received body:', body);
     return this.bookmarksService.create(body.url);
   }
 
@@ -21,8 +20,8 @@ export class BookmarksController {
   async delete(@Param('id') id: string): Promise<void> {
     await this.bookmarksService.delete(id);
   }
-  @Get('getByKeyWord')
-  getByKeyWord(@Query('key') key: string): Promise<Bookmark[]> {
-    return this.bookmarksService.searchItem(key);
+  @Get('search')
+  searchByKeyword(@Query('keyword') keyword: string): Promise<Bookmark[]> {
+    return this.bookmarksService.searchBookmarks(keyword);
   }
 }

@@ -12,7 +12,6 @@ import { MongooseModule } from '@nestjs/mongoose';
   ],
   controllers: [BookmarksController],
   providers: [BookmarksService]
-  
 })
 
-export class BookmarksModule {}
+export class BookmarksModule { }
