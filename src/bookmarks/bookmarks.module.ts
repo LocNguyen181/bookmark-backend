@@ -1,17 +1,11 @@
 import { Module } from '@nestjs/common';
 import { BookmarksController } from './bookmarks.controller';
 import { BookmarksService } from './bookmarks.service';
-import { Bookmark, BookmarkSchema } from './bookmark.model';
-import { MongooseModule } from '@nestjs/mongoose';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Bookmark.name, schema: BookmarkSchema },
-    ]),
-  ],
   controllers: [BookmarksController],
-  providers: [BookmarksService]
+  providers: [BookmarksService, PrismaService],
+  exports: [BookmarksService],
 })
-
 export class BookmarksModule { }

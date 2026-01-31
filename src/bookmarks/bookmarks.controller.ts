@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Body, Delete, Param, Query } from '@nestjs/common';
 import { BookmarksService } from './bookmarks.service';
-import { Bookmark } from './bookmark.model';
 
 @Controller('bookmarks')
 export class BookmarksController {
@@ -14,8 +13,8 @@ export class BookmarksController {
   }
 
   @Post()
-  async create(@Body() body: { url: string }) {
-    return this.bookmarksService.create(body.url);
+  async create(@Body() body: { url: string; tags?: string[] }) {
+    return this.bookmarksService.create(body.url, body.tags);
   }
 
   @Delete(':id')
@@ -23,7 +22,7 @@ export class BookmarksController {
     await this.bookmarksService.delete(id);
   }
   @Get('search')
-  searchByKeyword(@Query('keyword') keyword: string): Promise<Bookmark[]> {
+  searchByKeyword(@Query('keyword') keyword: string): Promise<any[]> {
     return this.bookmarksService.searchItem(keyword);
   }
 
