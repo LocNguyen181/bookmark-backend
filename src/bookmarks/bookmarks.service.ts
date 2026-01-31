@@ -53,14 +53,6 @@ export class BookmarksService {
     await this.bookmarkModel.findByIdAndDelete(id);
   }
 
-<<<<<<< HEAD
-  async searchBookmarks(keyword: string): Promise<Bookmark[]> {
-    const bookmarks = await this.getBookmarks();
-    return bookmarks.filter(bookmark =>
-      bookmark.title.toLowerCase().includes(keyword.toLowerCase()) ||
-      bookmark.url.toLowerCase().includes(keyword.toLowerCase()),
-    );
-=======
   async searchItem(key: string): Promise<Bookmark[]> {
     try {
       const result = await this.getBookmarks();
@@ -72,7 +64,6 @@ export class BookmarksService {
     } catch (e) {
       throw new Error('Got Error');
     }
->>>>>>> a794cda9899fb8709f21efd3d88eca89157cd5da
   }
 
   private async fetchTitle(url: string): Promise<string> {
@@ -106,7 +97,7 @@ export class BookmarksService {
       return url;
     }
   }
-  
+
   async addTags(id: string, tags: string[] | string): Promise<void> {
     const normalized = Array.isArray(tags) ? tags : [tags];
     const cleaned = normalized

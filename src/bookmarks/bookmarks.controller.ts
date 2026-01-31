@@ -24,7 +24,7 @@ export class BookmarksController {
   }
   @Get('search')
   searchByKeyword(@Query('keyword') keyword: string): Promise<Bookmark[]> {
-    return this.bookmarksService.searchBookmarks(keyword);
+    return this.bookmarksService.searchItem(keyword);
   }
 
   @Post(':id/tags')
