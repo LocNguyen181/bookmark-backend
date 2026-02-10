@@ -13,8 +13,8 @@ export class BookmarksController {
   }
 
   @Post()
-  async create(@Body() body: { url: string; tags?: string[] }) {
-    return this.bookmarksService.create(body.url, body.tags);
+  async create(@Body() body: { url: string; tags?: string[]; actressName?: string; title?: string }) {
+    return this.bookmarksService.create(body.url, body.tags, body.actressName, body.title);
   }
 
   @Delete(':id')
@@ -26,11 +26,32 @@ export class BookmarksController {
     return this.bookmarksService.searchItem(keyword);
   }
 
+  @Get('actress')
+  searchByActress(@Query('name') name: string): Promise<any[]> {
+    return this.bookmarksService.searchByActress(name);
+  }
+
+  @Get('actress-list')
+  listUniqueActresses(@Query('query') query?: string): Promise<string[]> {
+    return this.bookmarksService.listUniqueActresses(query);
+  }
+
   @Post(':id/tags')
   async addTagsToBookmark(
     @Param('id') id: string,
     @Body() body: { tags: string[] },
   ): Promise<void> {
     return this.bookmarksService.addTags(id, body.tags);
+  }
+
+  @Get('fetch-info')
+  async fetchInfo(@Query('url') url: string) {
+    const title = await this.bookmarksService.fetchTitle(url);
+    return { title };
+  }
+
+  @Post('sync-titles')
+  async syncTitles() {
+    return this.bookmarksService.syncAllTitles();
   }
 }

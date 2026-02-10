@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,9 +7,10 @@ datasource db {
 }
 
 model Bookmark {
-  id        Int      @id @default(autoincrement())
-  url       String
-  title     String?
-  tags      String?  // SQLite doesn't support arrays, so we can store them as a string (e.g. JSON or comma-separated)
-  dateAdded DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  url         String
+  title       String?
+  tags        String?
+  dateAdded   DateTime @default(now())
+  actressName String?
 }
